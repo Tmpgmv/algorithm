@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'mephi'
+version = '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+/**
+ * 🔴 IMPORTANT PART
+ * We explicitly tell Gradle where sources are
+ */
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation files('libs/heroes_task_lib-1.0-SNAPSHOT.jar')
+}
+
+application {
+    // replace if needed, but most likely correct
+    mainClass = 'com.battle.heroes.Main'
+}
