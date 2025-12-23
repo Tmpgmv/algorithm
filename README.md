@@ -152,9 +152,9 @@ int cost = unit.getCost();                    // O(1)
             
             if (newEff > dp[i][points]) {         // O(1)
                 dp[i][points] = newEff;           // O(1)
-                bestPrevType[i][points] = typeIdx; // O(1) 🔥
-                bestPrevPoints[i][points] = prevPoints; // O(1) 🔥
-                bestCount[i][points] = cnt;       // O(1) 🔥
+                bestPrevType[i][points] = typeIdx; // O(1)
+                bestPrevPoints[i][points] = prevPoints; // O(1)
+                bestCount[i][points] = cnt;       // O(1)
             }
         }
     }
