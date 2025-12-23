@@ -6,11 +6,10 @@ import com.battle.heroes.army.programs.GeneratePreset;
 import java.util.*;
 
 /**
- * Реализация генератора оптимальной армии компьютера с использованием динамического программирования
+ * Генератор оптимальной армии компьютера с использованием динамического программирования
  * Максимизирует соотношение (атака + здоровье) / стоимость при ограничениях:
  * - ≤11 юнитов каждого типа
  * - ≤maxPoints общих очков (1500)
- * Сложность: O(n × m), где n=4 (типы), m≈150 (макс. юнитов)
  */
 public class GeneratePresetImpl implements GeneratePreset {
 
@@ -20,7 +19,7 @@ public class GeneratePresetImpl implements GeneratePreset {
         Army computerArmy = new Army();
         int n = unitList.size(); // n=4: лучник, всадник, мечник, копейщик
 
-        // Шаг 1: Вычисляем эффективность каждого типа юнита
+        // Вычисляем эффективность каждого типа юнита
         // Эффективность = (атака + здоровье) / стоимость
         double[] efficiencies = new double[n];
         for (int i = 0; i < n; i++) {
@@ -28,20 +27,18 @@ public class GeneratePresetImpl implements GeneratePreset {
             efficiencies[i] = ((double) u.getBaseAttack() + u.getHealth()) / u.getCost();
         }
 
-        // Шаг 2: Сортируем типы юнитов по убыванию эффективности
-        // Для оптимального порядка рассмотрения в DP
+        // Сортируем типы юнитов по убыванию эффективности
         Integer[] indices = new Integer[n];
         for (int i = 0; i < n; i++) indices[i] = i;
         Arrays.sort(indices, (a, b) -> Double.compare(efficiencies[b], efficiencies[a]));
 
-        // Шаг 3: Инициализация таблиц динамического программирования
+        // Инициализация таблиц динамического программирования
         // dp[i][j] = максимальная эффективность для первых i типов с j очками
         double[][] dp = new double[n + 1][maxPoints + 1];
 
         // counts[i][j][type] = количество юнитов типа type в оптимальном решении для i типов, j очков
         int[][][] counts = new int[n + 1][maxPoints + 1][n];
 
-        // Шаг 4: Заполнение DP таблицы
         // Перебираем типы юнитов в порядке убывания эффективности
         for (int i = 1; i <= n; i++) {
             int typeIdx = indices[i - 1]; // Индекс текущего типа
@@ -72,7 +69,6 @@ public class GeneratePresetImpl implements GeneratePreset {
             }
         }
 
-        // Шаг 5: Восстановление оптимального решения
         // Берем лучшее решение для всех типов и всех доступных очков
         List<Unit> selectedUnits = new ArrayList<>();
         int totalCost = 0; // Фактическая стоимость собранной армии
@@ -103,10 +99,10 @@ public class GeneratePresetImpl implements GeneratePreset {
             }
         }
 
-        // Шаг 6: Распределяем юниты по координатам (0-2 по X, 0-20 по Y)
+        // Распределяем юниты по координатам (0-2 по X, 0-20 по Y)
         assignCoordinates(selectedUnits);
 
-        // Шаг 7: Финализируем армию
+        // Окончательно собираем армию
         computerArmy.setUnits(selectedUnits);
         computerArmy.setPoints(totalCost);
         return computerArmy;

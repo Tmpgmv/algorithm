@@ -10,19 +10,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e2600e73-f2f1-428a-ae1f-38c97f83820f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gradle/8.14/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.14/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.14/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.14/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.14/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14/fileHashes/resourceHashesCache.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/programs/UnitTargetPathFinderImpl$Node.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/programs/UnitTargetPathFinderImpl$Node.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/programs/UnitTargetPathFinderImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/programs/UnitTargetPathFinderImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/distributions/heroes_student_task-1.0-SNAPSHOT.tar" beforeDir="false" afterPath="$PROJECT_DIR$/build/distributions/heroes_student_task-1.0-SNAPSHOT.tar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/distributions/heroes_student_task-1.0-SNAPSHOT.zip" beforeDir="false" afterPath="$PROJECT_DIR$/build/distributions/heroes_student_task-1.0-SNAPSHOT.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/heroes_student_task-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/heroes_student_task-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/programs/GeneratePresetImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/programs/GeneratePresetImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/programs/SimulateBattleImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/programs/SimulateBattleImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/programs/SuitableForAttackUnitsFinderImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/programs/SuitableForAttackUnitsFinderImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/programs/UnitTargetPathFinderImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/programs/UnitTargetPathFinderImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -93,31 +84,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.heroes_student_task [:Main.main()].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.heroes_student_task [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.heroes_student_task [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.heroes_student_task [run].executor&quot;: &quot;Debug&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;experiment&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Delamart/Documents/GitHub/heroes_student_task/libs/heroes_task_lib-1.0-SNAPSHOT.jar&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.heroes_student_task [:Main.main()].executor": "Debug",
+    "Gradle.heroes_student_task [build].executor": "Run",
+    "Gradle.heroes_student_task [clean].executor": "Run",
+    "Gradle.heroes_student_task [run].executor": "Debug",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Delamart/Documents/GitHub/heroes_student_task/libs/heroes_task_lib-1.0-SNAPSHOT.jar",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Delamart\Documents\GitHub\heroes_student_task\src\programs" />

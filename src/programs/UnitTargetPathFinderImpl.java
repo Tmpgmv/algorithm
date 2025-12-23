@@ -6,12 +6,18 @@ import com.battle.heroes.army.programs.UnitTargetPathFinder;
 
 import java.util.*;
 
+
+/**
+ * Определить кратчайший маршрут между атакующим и
+ * атакуемым юнитом и возвращает его в виде списка объектов,
+ * содержащих координаты каждой точки данного кратчайшего пути.
+ * */
 public class UnitTargetPathFinderImpl implements UnitTargetPathFinder {
 
     private static final int WIDTH = 27;
     private static final int HEIGHT = 21;
 
-    // 🔥 КОНСТРУКТОР ПО УМОЛЧАНИЮ ДЛЯ РЕФЛЕКСИИ
+    // 🔥 Конструктор без аргументов.
     public UnitTargetPathFinderImpl() {}
 
     @Override
@@ -29,11 +35,10 @@ public class UnitTargetPathFinderImpl implements UnitTargetPathFinder {
             }
         }
 
-        // A* с правильной PriorityQueue
         PriorityQueue<Node> openSet = new PriorityQueue<>(Comparator.comparingDouble(n -> n.fScore));
         Map<String, Double> gScore = new HashMap<>();
         Map<String, Edge> cameFrom = new HashMap<>();
-        Set<String> openSetKeys = new HashSet<>(); // 🔥 КЛЮЧЕВОЕ: отслеживаем открытые
+        Set<String> openSetKeys = new HashSet<>(); // 🔥 Отслеживаем открытые
 
         String startKey = startX + "," + startY;
         gScore.put(startKey, 0.0);
@@ -72,7 +77,7 @@ public class UnitTargetPathFinderImpl implements UnitTargetPathFinder {
                     gScore.put(nextKey, tentativeG);
                     double fScore = tentativeG + heuristic(nextX, nextY, targetX, targetY);
 
-                    // 🔥 ПРАВИЛЬНОЕ обновление PriorityQueue
+                    // 🔥 Обновление PriorityQueue
                     if (openSetKeys.contains(nextKey)) {
                         // Уже в очереди — просто обновим при следующей poll()
                     } else {
