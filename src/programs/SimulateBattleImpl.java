@@ -7,61 +7,77 @@ import com.battle.heroes.army.programs.SimulateBattle;
 
 import java.util.*;
 
+/**
+ * Симуляция боя ТОЧНО по правилам задания:
+ * - Сортировка всех юнитов по атаке в начале раунда
+ * - Поочередные ходы до конца раунда
+ * - Если армия уничтожена → остальные юниты противника завершают раунд
+ * - Динамическое исключение мертвых из списков армий
+ * Сложность: O(n² log n)
+ */
 public class SimulateBattleImpl implements SimulateBattle {
-    public SimulateBattleImpl() {
-        // Пустой конструктор для рефлексии
-    }
+
     private PrintBattleLog printBattleLog;
+    public SimulateBattleImpl() {}
 
     @Override
     public void simulate(Army playerArmy, Army computerArmy) throws InterruptedException {
-
         List<Unit> playerUnits = new ArrayList<>(playerArmy.getUnits());
         List<Unit> computerUnits = new ArrayList<>(computerArmy.getUnits());
 
-        // Основной цикл битвы
+        // Главный цикл раундов
         while (!playerUnits.isEmpty() && !computerUnits.isEmpty()) {
-            // Раунд игрока
-            if (!playerUnits.isEmpty()) {
-                simulateSideTurn(playerUnits, computerUnits);
+            // === НАЧАЛО РАУНДА ===
+
+            // 1. Собираем живых юнитов для сортировки
+            List<Unit> allAliveUnits = new ArrayList<>();
+            allAliveUnits.addAll(getAliveUnits(playerUnits));
+            allAliveUnits.addAll(getAliveUnits(computerUnits));
+
+            if (allAliveUnits.isEmpty()) break;
+
+            // 2. СОРТИРУЕМ ПО УБЫВАНИЮ АТАКИ
+            allAliveUnits.sort(Comparator.comparingInt(Unit::getBaseAttack).reversed());
+
+            // 3. КАЖДЫЙ ЮНИТ ВЫПОЛНЯЕТ ХОД ПО ОЧЕРЕДИ
+            for (Unit currentUnit : allAliveUnits) {
+                // Проверяем жив ли юнит (мог погибнуть ранее в раунде)
+                if (!currentUnit.isAlive()) continue;
+
+                // Атакуем
+                Unit target = currentUnit.getProgram().attack();
+
+                // Логируем
+                if (target != null && printBattleLog != null) {
+                    printBattleLog.printBattleLog(currentUnit, target);
+                }
+
+                // ✅ КРИТИЧЕСКОЕ: НЕ прерываем раунд! Только обновляем списки
+                updateArmies(playerUnits, computerUnits);
             }
 
-            // Раунд компьютера (если игрок еще жив)
-            if (!playerUnits.isEmpty() && !computerUnits.isEmpty()) {
-                simulateSideTurn(computerUnits, playerUnits);
-            }
+            // 4. Окончательная очистка ПОСЛЕ раунда
+            playerUnits.removeIf(unit -> !unit.isAlive());
+            computerUnits.removeIf(unit -> !unit.isAlive());
         }
     }
 
-    private void simulateSideTurn(List<Unit> attackers, List<Unit> defenders) throws InterruptedException {
-        // 1. Сортируем атакующих по убыванию атаки
-        attackers.sort(Comparator.comparingInt(Unit::getBaseAttack).reversed());
-
-        // 2. Каждый юнит ходит по очереди
-        Iterator<Unit> iterator = attackers.iterator();
-        while (iterator.hasNext()) {
-            Unit attacker = iterator.next();
-
-            // Проверяем жив ли юнит (может погибнуть от предыдущих атак)
-            if (!attacker.isAlive()) {
-                iterator.remove();
-                continue;
-            }
-
-            // 3. Атакуем
-            Unit target = attacker.getProgram().attack();
-
-            // 4. Логируем атаку
-            if (target != null) {
-                printBattleLog.printBattleLog(attacker, target);
-            }
-
-            // 5. Удаляем мертвых защитников (пересчет очередей)
-            removeDeadUnits(defenders);
-        }
+    /**
+     * Обновляет списки армий без прерывания раунда
+     * Мертвые юниты исключаются из будущих проверок, но раунд продолжается
+     */
+    private void updateArmies(List<Unit> playerUnits, List<Unit> computerUnits) {
+        // Удаляем мертвых только из списков армий (не прерываем цикл)
+        playerUnits.removeIf(unit -> !unit.isAlive());
+        computerUnits.removeIf(unit -> !unit.isAlive());
     }
 
-    private void removeDeadUnits(List<Unit> units) {
-        units.removeIf(unit -> !unit.isAlive());
+    /**
+     * Фильтрует только живых юнитов для формирования очереди
+     */
+    private List<Unit> getAliveUnits(List<Unit> units) {
+        return units.stream()
+                .filter(Unit::isAlive)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 }
