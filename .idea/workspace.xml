@@ -17,12 +17,13 @@
       <change beforePath="$PROJECT_DIR$/.gradle/8.14/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/programs/SimulateBattleImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/programs/SimulateBattleImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/programs/UnitTargetPathFinderImpl$Node.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/programs/UnitTargetPathFinderImpl$Node.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/programs/UnitTargetPathFinderImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/programs/UnitTargetPathFinderImpl.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/distributions/heroes_student_task-1.0-SNAPSHOT.tar" beforeDir="false" afterPath="$PROJECT_DIR$/build/distributions/heroes_student_task-1.0-SNAPSHOT.tar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/distributions/heroes_student_task-1.0-SNAPSHOT.zip" beforeDir="false" afterPath="$PROJECT_DIR$/build/distributions/heroes_student_task-1.0-SNAPSHOT.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/libs/heroes_student_task-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/heroes_student_task-1.0-SNAPSHOT.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/programs/SimulateBattleImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/programs/SimulateBattleImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/programs/UnitTargetPathFinderImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/programs/UnitTargetPathFinderImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

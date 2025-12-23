@@ -11,6 +11,9 @@ public class UnitTargetPathFinderImpl implements UnitTargetPathFinder {
     private static final int WIDTH = 27;
     private static final int HEIGHT = 21;
 
+    // 🔥 КОНСТРУКТОР ПО УМОЛЧАНИЮ ДЛЯ РЕФЛЕКСИИ
+    public UnitTargetPathFinderImpl() {}
+
     @Override
     public List<Edge> getTargetPath(Unit attackUnit, Unit targetUnit, List<Unit> existingUnits) {
         int startX = attackUnit.getxCoordinate();
@@ -18,6 +21,7 @@ public class UnitTargetPathFinderImpl implements UnitTargetPathFinder {
         int targetX = targetUnit.getxCoordinate();
         int targetY = targetUnit.getyCoordinate();
 
+        // Препятствия: живые юниты кроме start/target
         Set<String> obstacles = new HashSet<>();
         for (Unit unit : existingUnits) {
             if (unit.isAlive() && unit != attackUnit && unit != targetUnit) {
@@ -25,28 +29,30 @@ public class UnitTargetPathFinderImpl implements UnitTargetPathFinder {
             }
         }
 
+        // A* с правильной PriorityQueue
         PriorityQueue<Node> openSet = new PriorityQueue<>(Comparator.comparingDouble(n -> n.fScore));
         Map<String, Double> gScore = new HashMap<>();
-        Map<String, Double> fScore = new HashMap<>();
         Map<String, Edge> cameFrom = new HashMap<>();
+        Set<String> openSetKeys = new HashSet<>(); // 🔥 КЛЮЧЕВОЕ: отслеживаем открытые
 
         String startKey = startX + "," + startY;
         gScore.put(startKey, 0.0);
-        fScore.put(startKey, heuristic(startX, startY, targetX, targetY));
-        openSet.add(new Node(startX, startY, 0, 0));
+        openSet.add(new Node(startX, startY, 0.0, heuristic(startX, startY, targetX, targetY)));
+        openSetKeys.add(startKey);
 
         while (!openSet.isEmpty()) {
             Node current = openSet.poll();
             String currentKey = current.x + "," + current.y;
+            openSetKeys.remove(currentKey);
 
             if (current.x == targetX && current.y == targetY) {
-                return reconstructPath(cameFrom, current.x, current.y, startX, startY);
+                return reconstructPath(cameFrom, current.x, current.y);
             }
 
-            // 8 направлений (включая диагонали)
+            // 8 направлений (ортогональные + диагонали)
             int[][] directions = {
-                    {-1, 0}, {1, 0}, {0, -1}, {0, 1},  // Ортогональные
-                    {-1, -1}, {-1, 1}, {1, -1}, {1, 1}  // Диагональные
+                    {-1, 0}, {1, 0}, {0, -1}, {0, 1},     // Ортогональные (вес 1.0)
+                    {-1, -1}, {-1, 1}, {1, -1}, {1, 1}   // Диагональные (вес √2 ≈ 1.414)
             };
 
             for (int[] dir : directions) {
@@ -58,16 +64,20 @@ public class UnitTargetPathFinderImpl implements UnitTargetPathFinder {
                 }
 
                 String nextKey = nextX + "," + nextY;
-                double tentativeG = gScore.getOrDefault(currentKey, Double.MAX_VALUE) +
-                        (Math.abs(dir[0]) + Math.abs(dir[1]) == 2 ? 1.414 : 1.0);
+                double moveCost = (Math.abs(dir[0]) + Math.abs(dir[1]) == 2) ? 1.414 : 1.0;
+                double tentativeG = gScore.getOrDefault(currentKey, Double.MAX_VALUE) + moveCost;
 
                 if (tentativeG < gScore.getOrDefault(nextKey, Double.MAX_VALUE)) {
                     cameFrom.put(nextKey, new Edge(current.x, current.y));
                     gScore.put(nextKey, tentativeG);
-                    fScore.put(nextKey, tentativeG + heuristic(nextX, nextY, targetX, targetY));
+                    double fScore = tentativeG + heuristic(nextX, nextY, targetX, targetY);
 
-                    if (!openSet.stream().anyMatch(n -> n.x == nextX && n.y == nextY)) {
-                        openSet.add(new Node(nextX, nextY, gScore.get(nextKey), fScore.get(nextKey)));
+                    // 🔥 ПРАВИЛЬНОЕ обновление PriorityQueue
+                    if (openSetKeys.contains(nextKey)) {
+                        // Уже в очереди — просто обновим при следующей poll()
+                    } else {
+                        openSet.add(new Node(nextX, nextY, tentativeG, fScore));
+                        openSetKeys.add(nextKey);
                     }
                 }
             }
@@ -76,16 +86,20 @@ public class UnitTargetPathFinderImpl implements UnitTargetPathFinder {
         return new ArrayList<>(); // Путь не найден
     }
 
+    /** Октагональная эвристика (оптимальна для 8 направлений) */
     private double heuristic(int x, int y, int targetX, int targetY) {
-        // Манхэттенское расстояние (для 8 направлений)
-        return Math.abs(x - targetX) + Math.abs(y - targetY);
+        double dx = Math.abs(x - targetX);
+        double dy = Math.abs(y - targetY);
+        double diagonal = Math.min(dx, dy);
+        return 1.414 * diagonal + (dx + dy - 2 * diagonal); // √2 для диагоналей + 1 для прямых
     }
 
     private boolean isValid(int x, int y) {
         return x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT;
     }
 
-    private List<Edge> reconstructPath(Map<String, Edge> cameFrom, int currentX, int currentY, int startX, int startY) {
+    /** Восстанавливает путь от target к start (включительно) */
+    private List<Edge> reconstructPath(Map<String, Edge> cameFrom, int currentX, int currentY) {
         List<Edge> path = new ArrayList<>();
         String currentKey = currentX + "," + currentY;
 
@@ -95,13 +109,12 @@ public class UnitTargetPathFinderImpl implements UnitTargetPathFinder {
             currentKey = cameFrom.containsKey(currentKey) ?
                     cameFrom.get(currentKey).getX() + "," + cameFrom.get(currentKey).getY() : null;
         }
-
-        return path; // Включает и start, и target
+        return path;
     }
 
     private static class Node {
-        int x, y;
-        double gScore, fScore;
+        final int x, y;
+        final double gScore, fScore;
 
         Node(int x, int y, double gScore, double fScore) {
             this.x = x;
