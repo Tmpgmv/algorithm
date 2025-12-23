@@ -3,38 +3,45 @@ package programs;
 import com.battle.heroes.army.Unit;
 import com.battle.heroes.army.programs.SuitableForAttackUnitsFinder;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
- * Определить список юнитов, подходящих для атаки, для атакующего юнита одной из армий.
+ * Определение "видимых" юнитов для атаки.
+ * Подходящий юнит: не закрыт соседним по Y в том же ряду (X)
  */
 public class SuitableForAttackUnitsFinderImpl implements SuitableForAttackUnitsFinder {
 
+    // 🔥 Конструктор по умолчанию для рефлексии.
+    public SuitableForAttackUnitsFinderImpl() {}
 
-    /**
-     * Цель метода — исключить ненужные попытки найти кратчайший путь между юнитами,
-     * которые не могут атаковать друг друга.
-     * */
     @Override
     public List<Unit> getSuitableUnits(List<List<Unit>> unitsByRow, boolean isLeftArmyTarget) {
         List<Unit> suitableUnits = new ArrayList<>();
 
+        // Перебираем ряды противника (m=3)
         for (List<Unit> row : unitsByRow) {
             if (row == null || row.isEmpty()) continue;
 
+            // 🔥 ОПТИМИЗАЦИЯ O(n): создаем карту юнитов по координате Y
+            Map<Integer, Unit> unitsByY = new HashMap<>();
+            for (Unit unit : row) {
+                if (unit != null && unit.isAlive()) {
+                    unitsByY.put(unit.getyCoordinate(), unit);
+                }
+            }
+
+            // Проверяем каждый юнит в ряду (n=21)
             for (Unit unit : row) {
                 if (unit == null || !unit.isAlive()) continue;
 
-                // Проверяем, не закрыт ли юнит соседним по Y
-                boolean isSuitable = true;
-
+                // 🔥 O(1) проверка видимости через HashMap
+                boolean isSuitable;
                 if (isLeftArmyTarget) {
-                    // Для левой армии (компьютер атакует): не закрыт справа (больше Y)
-                    isSuitable = !hasNeighborToRight(row, unit);
+                    // Компьютер атакует: не закрыт СПРАВА (нет юнита y+1)
+                    isSuitable = !unitsByY.containsKey(unit.getyCoordinate() + 1);
                 } else {
-                    // Для правой армии (игрок атакует): не закрыт слева (меньше Y)
-                    isSuitable = !hasNeighborToLeft(row, unit);
+                    // Игрок атакует: не закрыт СЛЕВА (нет юнита y-1)
+                    isSuitable = !unitsByY.containsKey(unit.getyCoordinate() - 1);
                 }
 
                 if (isSuitable) {
@@ -44,31 +51,5 @@ public class SuitableForAttackUnitsFinderImpl implements SuitableForAttackUnitsF
         }
 
         return suitableUnits;
-    }
-
-    private boolean hasNeighborToRight(List<Unit> row, Unit unit) {
-        int y = unit.getyCoordinate();
-        // Ищем юнита в соседней клетке справа (y+1)
-        for (Unit neighbor : row) {
-            if (neighbor != null && neighbor.isAlive() &&
-                    neighbor.getyCoordinate() == y + 1 &&
-                    neighbor.getxCoordinate() == unit.getxCoordinate()) {
-                return true; // Закрыт справа
-            }
-        }
-        return false;
-    }
-
-    private boolean hasNeighborToLeft(List<Unit> row, Unit unit) {
-        int y = unit.getyCoordinate();
-        // Ищем юнита в соседней клетке слева (y-1)
-        for (Unit neighbor : row) {
-            if (neighbor != null && neighbor.isAlive() &&
-                    neighbor.getyCoordinate() == y - 1 &&
-                    neighbor.getxCoordinate() == unit.getxCoordinate()) {
-                return true; // Закрыт слева
-            }
-        }
-        return false;
     }
 }

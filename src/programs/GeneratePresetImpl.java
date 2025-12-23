@@ -13,6 +13,9 @@ import java.util.*;
  */
 public class GeneratePresetImpl implements GeneratePreset {
 
+    // 🔥 Конструктор по умолчанию
+    public GeneratePresetImpl() {}
+
     @Override
     public Army generate(List<Unit> unitList, int maxPoints) {
         // Инициализируем армию компьютера
@@ -32,99 +35,98 @@ public class GeneratePresetImpl implements GeneratePreset {
         for (int i = 0; i < n; i++) indices[i] = i;
         Arrays.sort(indices, (a, b) -> Double.compare(efficiencies[b], efficiencies[a]));
 
-        // Инициализация таблиц динамического программирования
-        // dp[i][j] = максимальная эффективность для первых i типов с j очками
+        // Инициализация таблиц
         double[][] dp = new double[n + 1][maxPoints + 1];
 
-        // counts[i][j][type] = количество юнитов типа type в оптимальном решении для i типов, j очков
-        int[][][] counts = new int[n + 1][maxPoints + 1][n];
+        int[][] bestPrevType = new int[n + 1][maxPoints + 1];  // Предыдущий тип
+        int[][] bestPrevPoints = new int[n + 1][maxPoints + 1]; // Предыдущие очки
+        int[][] bestCount = new int[n + 1][maxPoints + 1];      // Количество юнитов
 
-        // Перебираем типы юнитов в порядке убывания эффективности
+        // Заполнение таблицы
         for (int i = 1; i <= n; i++) {
-            int typeIdx = indices[i - 1]; // Индекс текущего типа
+            int typeIdx = indices[i - 1];
             Unit unit = unitList.get(typeIdx);
-            int cost = unit.getCost();    // Стоимость одного юнита этого типа
+            int cost = unit.getCost();
 
-            // Для каждого возможного количества очков
             for (int points = 0; points <= maxPoints; points++) {
                 // Базовый случай: не используем текущий тип
                 dp[i][points] = dp[i - 1][points];
 
-                // Пробуем добавить 1..11 юнитов текущего типа
+                // Пробуем 1..11 юнитов текущего типа
                 for (int cnt = 1; cnt <= 11 && points >= cnt * cost; cnt++) {
-                    int prevPoints = points - cnt * cost; // Очки для предыдущих типов
+                    int prevPoints = points - cnt * cost;
                     double newEff = dp[i - 1][prevPoints] + cnt * efficiencies[typeIdx];
 
-                    // Если новая комбинация лучше
                     if (newEff > dp[i][points]) {
-                        dp[i][points] = newEff; // Обновляем эффективность
-
-                        // Сохраняем оптимальные количества юнитов
-                        // Копируем решение для предыдущих типов
-                        System.arraycopy(counts[i - 1][prevPoints], 0, counts[i][points], 0, n);
-                        // Устанавливаем количество текущего типа
-                        counts[i][points][typeIdx] = cnt;
+                        // 🔥 O(1) обновление вместо System.arraycopy O(n)
+                        dp[i][points] = newEff;
+                        bestPrevType[i][points] = typeIdx;
+                        bestPrevPoints[i][points] = prevPoints;
+                        bestCount[i][points] = cnt;
                     }
                 }
             }
         }
 
-        // Берем лучшее решение для всех типов и всех доступных очков
+        // Восстановление решения через backtracking)
         List<Unit> selectedUnits = new ArrayList<>();
-        int totalCost = 0; // Фактическая стоимость собранной армии
-        int[] finalCounts = counts[n][maxPoints]; // Количества юнитов каждого типа
+        int totalCost = 0;
+        int currentPoints = maxPoints;
+        int currentTypeIdx = n;
 
-        // Создаем экземпляры юнитов согласно оптимальным количествам
-        for (int i = 0; i < n; i++) {
-            int count = finalCounts[i]; // Сколько юнитов типа i нужно
-            if (count > 0) {
-                Unit template = unitList.get(i); // Шаблон юнита этого типа
-                for (int j = 0; j < count; j++) {
-                    // Клонируем юнит с уникальным именем
+        // Идем от конца к началу, восстанавливая оптимальное решение
+        while (currentTypeIdx > 0) {
+            int cnt = bestCount[currentTypeIdx][currentPoints];
+            if (cnt > 0) {
+                int typeIdx = bestPrevType[currentTypeIdx][currentPoints];
+                Unit template = unitList.get(typeIdx);
+
+                // Создаем cnt юнитов этого типа
+                for (int j = 0; j < cnt; j++) {
                     Unit newUnit = new Unit(
-                            template.getName() + " " + j,                    // Уникальное имя
-                            template.getUnitType(),                           // Тип юнита
-                            template.getHealth(),                             // Здоровье
-                            template.getBaseAttack(),                         // Базовая атака
-                            template.getCost(),                               // Стоимость
-                            template.getAttackType(),                         // Тип атаки
-                            template.getAttackBonuses(),                      // Бонусы атаки
-                            template.getDefenceBonuses(),                     // Бонусы защиты
-                            template.getxCoordinate(),                        // Начальные координаты X
-                            template.getyCoordinate()                         // Начальные координаты Y
+                            template.getName() + " " + j,
+                            template.getUnitType(),
+                            template.getHealth(),
+                            template.getBaseAttack(),
+                            template.getCost(),
+                            template.getAttackType(),
+                            template.getAttackBonuses(),
+                            template.getDefenceBonuses(),
+                            template.getxCoordinate(),
+                            template.getyCoordinate()
                     );
                     selectedUnits.add(newUnit);
                     totalCost += template.getCost();
                 }
+                currentPoints = bestPrevPoints[currentTypeIdx][currentPoints];
             }
+            currentTypeIdx--;
         }
 
-        // Распределяем юниты по координатам (0-2 по X, 0-20 по Y)
+        // Распределяем юниты по координатам
         assignCoordinates(selectedUnits);
 
-        // Окончательно собираем армию
+        // Финализируем армию
         computerArmy.setUnits(selectedUnits);
         computerArmy.setPoints(totalCost);
         return computerArmy;
     }
 
     /**
-     * Распределяет юниты армии по случайным уникальным координатам
+     * Распределяем юниты армии по случайным уникальным координатам
      * Левая сторона поля: X ∈ [0,2], Y ∈ [0,20]
      */
     private void assignCoordinates(List<Unit> units) {
-        Set<String> occupiedCoords = new HashSet<>(); // Множество занятых координат
+        Set<String> occupiedCoords = new HashSet<>();
         Random random = new Random();
 
         for (Unit unit : units) {
             int x, y;
-            // Генерируем уникальные координаты до успеха
             do {
-                x = random.nextInt(3);        // X: 0, 1 или 2 (левая армия)
-                y = random.nextInt(21);       // Y: 0-20 (21 ряд)
+                x = random.nextInt(3);      // X: 0, 1, 2 (левая армия)
+                y = random.nextInt(21);     // Y: 0-20 (21 ряд)
             } while (occupiedCoords.contains(x + "," + y));
 
-            // Занимаем координаты и устанавливаем их юниту
             occupiedCoords.add(x + "," + y);
             unit.setxCoordinate(x);
             unit.setyCoordinate(y);
