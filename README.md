@@ -2,8 +2,8 @@
 
 Выполнил: Граблевский М.В.
 
-1. Расчет алгоритмической сложности метода 
-getSuitableUnits интерфейса SuitableForAttackUnitsFinder
+**1. Расчет алгоритмической сложности метода 
+getSuitableUnits интерфейса SuitableForAttackUnitsFinder**
 
 Обозначения
 
@@ -91,7 +91,7 @@ return suitableUnits;  // O(1)
 
 
 
-2. Расчет алгоритмической сложности метода generate интерфейса GeneratePreset
+**2. Расчет алгоритмической сложности метода generate интерфейса GeneratePreset**
 
 Обозначения:
 
@@ -228,8 +228,8 @@ return computerArmy;                  // O(1)
 
 
 
-3. Расчет алгоритмической сложности метода getTargetPath 
-интерфейса UnitTargetPathFinder.
+**3. Расчет алгоритмической сложности метода getTargetPath 
+интерфейса UnitTargetPathFinder.**
 
 Обозначения
 
@@ -337,8 +337,8 @@ return new ArrayList<>();  // O(1)
 
 
 
-4. Расчет алгоритмической сложности метода 
-simulate интерфейса SimulateBattle SimulateBattle
+**4. Расчет алгоритмической сложности метода 
+simulate интерфейса SimulateBattle SimulateBattle**
 
 
 Обозначения
